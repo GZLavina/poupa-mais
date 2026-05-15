@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PoupaMais - Prototipos Web</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f7f9;
+        --panel: #ffffff;
+        --text: #20242a;
+        --muted: #69717d;
+        --line: #d7dce2;
+        --brand: #2f7d59;
+        --brand-dark: #245f45;
+        --income: #22765d;
+        --expense: #b84444;
+        --info: #356aa0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.4;
+      }
+
+      header {
+        border-bottom: 1px solid var(--line);
+        background: var(--panel);
+      }
+
+      .topbar,
+      main {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        min-height: 68px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        font-size: 1.05rem;
+      }
+
+      .mark {
+        width: 34px;
+        height: 34px;
+        border: 2px solid var(--brand);
+        display: grid;
+        place-items: center;
+        color: var(--brand);
+        font-weight: 700;
+      }
+
+      main {
+        padding: 32px 0 48px;
+      }
+
+      .intro {
+        display: grid;
+        grid-template-columns: 1.3fr 0.7fr;
+        gap: 24px;
+        align-items: stretch;
+        margin-bottom: 24px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        padding: 22px;
+      }
+
+      h1,
+      h2,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        font-size: clamp(1.75rem, 3vw, 2.5rem);
+        margin-bottom: 10px;
+      }
+
+      h2 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .scope-list {
+        display: grid;
+        gap: 10px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+
+      .scope-list li {
+        border-left: 4px solid var(--line);
+        padding-left: 10px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .prototype-card {
+        min-height: 220px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .screen-sketch {
+        border: 1px solid var(--line);
+        background: #fbfcfd;
+        height: 86px;
+        padding: 10px;
+        display: grid;
+        gap: 7px;
+        margin-bottom: 14px;
+      }
+
+      .bar {
+        height: 10px;
+        background: var(--line);
+      }
+
+      .bar.short {
+        width: 55%;
+      }
+
+      .bar.accent {
+        width: 70%;
+        background: #b8d8c8;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      a.button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 40px;
+        padding: 0 14px;
+        border: 1px solid var(--brand-dark);
+        background: var(--brand);
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      a.button.secondary {
+        background: #ffffff;
+        color: var(--brand-dark);
+      }
+
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      @media (max-width: 900px) {
+        .intro,
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+          padding: 16px 0;
+        }
+
+        .intro,
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <div class="mark">P+</div>
+          <span>PoupaMais</span>
+        </div>
+        <nav class="links" aria-label="Navegacao dos prototipos">
+          <a class="button secondary" href="login.html">Login</a>
+          <a class="button secondary" href="dashboard.html">Dashboard</a>
+          <a class="button secondary" href="transacoes.html">Transacoes</a>
+          <a class="button secondary" href="categorias-sumarios.html">Categorias</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="titulo">
+        <div class="panel">
+          <h1 id="titulo">Prototipos web de baixa fidelidade</h1>
+          <p class="muted">
+            Exemplos estaticos em HTML/CSS para ilustrar a experiencia principal da aplicacao PoupaMais.
+          </p>
+        </div>
+
+        <aside class="panel" aria-label="Escopo representado">
+          <h2>Escopo representado</h2>
+          <ul class="scope-list">
+            <li>Autenticacao e sessao segura.</li>
+            <li>Saldo, receitas, despesas e graficos simples.</li>
+            <li>Registro e consulta de transacoes.</li>
+            <li>Categorias e sumarios por periodo.</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="grid" aria-label="Lista de telas">
+        <article class="panel prototype-card">
+          <div>
+            <div class="screen-sketch" aria-hidden="true">
+              <div class="bar accent"></div>
+              <div class="bar"></div>
+              <div class="bar short"></div>
+            </div>
+            <h2>Login</h2>
+            <p class="muted">Entrada autenticada antes do acesso aos dados financeiros.</p>
+          </div>
+          <a class="button" href="login.html">Abrir tela</a>
+        </article>
+
+        <article class="panel prototype-card">
+          <div>
+            <div class="screen-sketch" aria-hidden="true">
+              <div class="row">
+                <div class="bar accent"></div>
+                <div class="bar"></div>
+              </div>
+              <div class="row">
+                <div class="bar"></div>
+                <div class="bar"></div>
+              </div>
+              <div class="bar short"></div>
+            </div>
+            <h2>Dashboard</h2>
+            <p class="muted">Visao consolidada de saldo, totais, indicadores e graficos.</p>
+          </div>
+          <a class="button" href="dashboard.html">Abrir tela</a>
+        </article>
+
+        <article class="panel prototype-card">
+          <div>
+            <div class="screen-sketch" aria-hidden="true">
+              <div class="bar accent"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar short"></div>
+            </div>
+            <h2>Transacoes</h2>
+            <p class="muted">Formulario de lancamento e lista de receitas e despesas.</p>
+          </div>
+          <a class="button" href="transacoes.html">Abrir tela</a>
+        </article>
+
+        <article class="panel prototype-card">
+          <div>
+            <div class="screen-sketch" aria-hidden="true">
+              <div class="row">
+                <div class="bar accent"></div>
+                <div class="bar"></div>
+              </div>
+              <div class="bar"></div>
+              <div class="bar short"></div>
+            </div>
+            <h2>Categorias e sumarios</h2>
+            <p class="muted">Manutencao de categorias e consultas agregadas por filtro.</p>
+          </div>
+          <a class="button" href="categorias-sumarios.html">Abrir tela</a>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

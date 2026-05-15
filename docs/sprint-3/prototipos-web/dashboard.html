@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PoupaMais - Dashboard</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f7f9;
+        --panel: #ffffff;
+        --text: #20242a;
+        --muted: #69717d;
+        --line: #d7dce2;
+        --brand: #2f7d59;
+        --brand-dark: #245f45;
+        --income: #22765d;
+        --expense: #b84444;
+        --info: #356aa0;
+        --warning: #b56b2a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.4;
+      }
+
+      .layout {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 220px 1fr;
+      }
+
+      aside {
+        background: #ffffff;
+        border-right: 1px solid var(--line);
+        padding: 22px 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        margin-bottom: 26px;
+      }
+
+      .mark {
+        width: 34px;
+        height: 34px;
+        border: 2px solid var(--brand);
+        color: var(--brand);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+      }
+
+      nav {
+        display: grid;
+        gap: 8px;
+      }
+
+      nav a,
+      .button {
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        border: 1px solid transparent;
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      nav a.active {
+        border-color: #b8d8c8;
+        background: #edf7f2;
+        color: var(--brand-dark);
+      }
+
+      main {
+        padding: 24px;
+      }
+
+      .topline {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        font-size: clamp(1.45rem, 2vw, 2rem);
+        margin-bottom: 4px;
+      }
+
+      h2 {
+        font-size: 1.05rem;
+        margin-bottom: 12px;
+      }
+
+      h3 {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .button {
+        background: var(--brand);
+        border-color: var(--brand-dark);
+        color: #ffffff;
+        justify-content: center;
+        white-space: nowrap;
+      }
+
+      .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .chip {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid var(--line);
+        background: #ffffff;
+        padding: 0 12px;
+        color: var(--muted);
+      }
+
+      .chip.active {
+        border-color: var(--info);
+        color: var(--info);
+        font-weight: 700;
+      }
+
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+
+      .panel,
+      .kpi,
+      .transaction {
+        background: var(--panel);
+        border: 1px solid var(--line);
+      }
+
+      .kpi {
+        padding: 16px;
+        min-height: 122px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .kpi .value {
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+
+      .income {
+        color: var(--income);
+      }
+
+      .expense {
+        color: var(--expense);
+      }
+
+      .info {
+        color: var(--info);
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: 1.25fr 0.75fr;
+        gap: 18px;
+      }
+
+      .panel {
+        padding: 18px;
+      }
+
+      .bars {
+        min-height: 290px;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 14px;
+        align-items: end;
+        border: 1px dashed #aab2bd;
+        padding: 16px;
+        background: #fbfcfd;
+      }
+
+      .bar-group {
+        display: grid;
+        gap: 6px;
+        align-items: end;
+        min-width: 0;
+      }
+
+      .bar {
+        width: 100%;
+        min-height: 22px;
+        background: #d9e9e1;
+        border: 1px solid #b8d8c8;
+      }
+
+      .bar.expense-bar {
+        background: #f0d0d0;
+        border-color: #dda4a4;
+      }
+
+      .bar-label {
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .transactions {
+        display: grid;
+        gap: 10px;
+      }
+
+      .transaction {
+        padding: 12px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .tag {
+        display: inline-flex;
+        min-height: 26px;
+        align-items: center;
+        border: 1px solid var(--line);
+        padding: 0 8px;
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin-top: 6px;
+      }
+
+      @media (max-width: 960px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        aside {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        nav {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .kpis,
+        .content-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        main {
+          padding: 18px;
+        }
+
+        .topline {
+          flex-direction: column;
+        }
+
+        nav,
+        .kpis,
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .bars {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside>
+        <div class="brand">
+          <div class="mark">P+</div>
+          <span>PoupaMais</span>
+        </div>
+        <nav aria-label="Menu principal">
+          <a class="active" href="dashboard.html">Dashboard</a>
+          <a href="transacoes.html">Transacoes</a>
+          <a href="categorias-sumarios.html">Categorias</a>
+          <a href="index.html">Prototipos</a>
+        </nav>
+      </aside>
+
+      <main>
+        <header class="topline">
+          <div>
+            <h1>Dashboard financeiro</h1>
+            <p class="muted">Maio de 2026 - usuario autenticado</p>
+          </div>
+          <a class="button" href="transacoes.html">Nova transacao</a>
+        </header>
+
+        <section class="filter-row" aria-label="Filtros de periodo">
+          <span class="chip active">Mes atual</span>
+          <span class="chip">Ultimos 3 meses</span>
+          <span class="chip">Ano</span>
+          <span class="chip">Personalizado</span>
+        </section>
+
+        <section class="kpis" aria-label="Indicadores principais">
+          <article class="kpi">
+            <span class="muted">Saldo atual</span>
+            <strong class="value">R$ 2.840,00</strong>
+            <span class="info">+ R$ 420,00 no periodo</span>
+          </article>
+          <article class="kpi">
+            <span class="muted">Receitas</span>
+            <strong class="value income">R$ 5.200,00</strong>
+            <span>4 entradas registradas</span>
+          </article>
+          <article class="kpi">
+            <span class="muted">Despesas</span>
+            <strong class="value expense">R$ 2.360,00</strong>
+            <span>18 saidas registradas</span>
+          </article>
+          <article class="kpi">
+            <span class="muted">Maior categoria</span>
+            <strong class="value">Moradia</strong>
+            <span class="expense">R$ 1.100,00</span>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="panel" aria-labelledby="grafico-mes">
+            <h2 id="grafico-mes">Evolucao por semana</h2>
+            <div class="bars" role="img" aria-label="Grafico ilustrativo de receitas e despesas por semana">
+              <div class="bar-group">
+                <div class="bar" style="height: 140px"></div>
+                <div class="bar expense-bar" style="height: 70px"></div>
+                <div class="bar-label">S1</div>
+              </div>
+              <div class="bar-group">
+                <div class="bar" style="height: 82px"></div>
+                <div class="bar expense-bar" style="height: 115px"></div>
+                <div class="bar-label">S2</div>
+              </div>
+              <div class="bar-group">
+                <div class="bar" style="height: 170px"></div>
+                <div class="bar expense-bar" style="height: 90px"></div>
+                <div class="bar-label">S3</div>
+              </div>
+              <div class="bar-group">
+                <div class="bar" style="height: 100px"></div>
+                <div class="bar expense-bar" style="height: 150px"></div>
+                <div class="bar-label">S4</div>
+              </div>
+              <div class="bar-group">
+                <div class="bar" style="height: 120px"></div>
+                <div class="bar expense-bar" style="height: 60px"></div>
+                <div class="bar-label">S5</div>
+              </div>
+              <div class="bar-group">
+                <div class="bar" style="height: 64px"></div>
+                <div class="bar expense-bar" style="height: 46px"></div>
+                <div class="bar-label">Prev.</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel" aria-labelledby="ultimas-transacoes">
+            <h2 id="ultimas-transacoes">Ultimas transacoes</h2>
+            <div class="transactions">
+              <div class="transaction">
+                <div>
+                  <strong>Supermercado</strong>
+                  <div class="tag">Alimentacao</div>
+                </div>
+                <strong class="expense">- R$ 186,40</strong>
+              </div>
+              <div class="transaction">
+                <div>
+                  <strong>Salario</strong>
+                  <div class="tag">Receita fixa</div>
+                </div>
+                <strong class="income">+ R$ 4.800,00</strong>
+              </div>
+              <div class="transaction">
+                <div>
+                  <strong>Transporte</strong>
+                  <div class="tag">Mobilidade</div>
+                </div>
+                <strong class="expense">- R$ 82,00</strong>
+              </div>
+              <div class="transaction">
+                <div>
+                  <strong>Freelance</strong>
+                  <div class="tag">Receita variavel</div>
+                </div>
+                <strong class="income">+ R$ 400,00</strong>
+              </div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

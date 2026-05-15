@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PoupaMais - Categorias e Sumarios</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f7f9;
+        --panel: #ffffff;
+        --text: #20242a;
+        --muted: #69717d;
+        --line: #d7dce2;
+        --brand: #2f7d59;
+        --brand-dark: #245f45;
+        --income: #22765d;
+        --expense: #b84444;
+        --info: #356aa0;
+        --warning: #b56b2a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.4;
+      }
+
+      header {
+        background: var(--panel);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .topbar,
+      main {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        min-height: 68px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+      }
+
+      .mark {
+        width: 34px;
+        height: 34px;
+        border: 2px solid var(--brand);
+        color: var(--brand);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      nav a {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid var(--line);
+        padding: 0 10px;
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      nav a.active {
+        border-color: #b8d8c8;
+        background: #edf7f2;
+        color: var(--brand-dark);
+      }
+
+      main {
+        padding: 24px 0 44px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        font-size: clamp(1.45rem, 2vw, 2rem);
+        margin-bottom: 4px;
+      }
+
+      h2 {
+        font-size: 1.05rem;
+        margin-bottom: 14px;
+      }
+
+      h3 {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .topline {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: flex-start;
+        margin-bottom: 18px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .panel,
+      .summary-card,
+      .category-row {
+        background: var(--panel);
+        border: 1px solid var(--line);
+      }
+
+      .panel {
+        padding: 18px;
+      }
+
+      label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 7px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        min-height: 42px;
+        border: 1px solid var(--line);
+        padding: 0 12px;
+        font: inherit;
+        background: #ffffff;
+      }
+
+      .field {
+        margin-bottom: 14px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+      }
+
+      button {
+        min-height: 42px;
+        border: 1px solid var(--line);
+        background: #ffffff;
+        font: inherit;
+        font-weight: 700;
+        padding: 0 14px;
+        cursor: default;
+      }
+
+      .primary-button {
+        border-color: var(--brand-dark);
+        background: var(--brand);
+        color: #ffffff;
+      }
+
+      .category-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .category-row {
+        padding: 12px;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .swatch {
+        width: 18px;
+        height: 18px;
+        border: 1px solid var(--line);
+      }
+
+      .green {
+        background: #b8d8c8;
+      }
+
+      .red {
+        background: #dda4a4;
+      }
+
+      .blue {
+        background: #b9cce1;
+      }
+
+      .orange {
+        background: #e4be92;
+      }
+
+      .status {
+        min-height: 26px;
+        border: 1px solid var(--line);
+        padding: 0 8px;
+        display: inline-flex;
+        align-items: center;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .summary-filters {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .summary-card {
+        padding: 14px;
+        min-height: 112px;
+      }
+
+      .summary-card strong {
+        display: block;
+        font-size: 1.25rem;
+        margin-top: 12px;
+      }
+
+      .income {
+        color: var(--income);
+      }
+
+      .expense {
+        color: var(--expense);
+      }
+
+      .info {
+        color: var(--info);
+      }
+
+      .breakdown {
+        display: grid;
+        gap: 12px;
+      }
+
+      .breakdown-row {
+        display: grid;
+        grid-template-columns: 120px 1fr 90px;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .track {
+        height: 14px;
+        border: 1px solid var(--line);
+        background: #fbfcfd;
+      }
+
+      .fill {
+        height: 100%;
+        background: #b9cce1;
+      }
+
+      .fill.expense-fill {
+        background: #dda4a4;
+      }
+
+      .fill.income-fill {
+        background: #b8d8c8;
+      }
+
+      .message {
+        border-left: 4px solid var(--info);
+        background: #eef5fb;
+        color: #254d73;
+        padding: 12px;
+        margin-top: 16px;
+      }
+
+      @media (max-width: 980px) {
+        .grid,
+        .summary-filters {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 700px) {
+        .topbar,
+        .topline {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .topbar {
+          padding: 16px 0;
+        }
+
+        .form-row,
+        .summary-grid,
+        .breakdown-row,
+        .category-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <div class="mark">P+</div>
+          <span>PoupaMais</span>
+        </div>
+        <nav aria-label="Menu principal">
+          <a href="dashboard.html">Dashboard</a>
+          <a href="transacoes.html">Transacoes</a>
+          <a class="active" href="categorias-sumarios.html">Categorias</a>
+          <a href="index.html">Prototipos</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="topline">
+        <div>
+          <h1>Categorias e sumarios</h1>
+          <p class="muted">Manutencao de categorias do usuario e consulta de agregacoes financeiras.</p>
+        </div>
+      </div>
+
+      <section class="grid">
+        <aside class="panel" aria-labelledby="categorias">
+          <h2 id="categorias">Categorias</h2>
+          <form>
+            <div class="field">
+              <label for="nome-categoria">Nome</label>
+              <input id="nome-categoria" value="Saude" />
+            </div>
+            <div class="form-row">
+              <select aria-label="Tipo padrao da categoria">
+                <option>Despesa</option>
+                <option>Receita</option>
+              </select>
+              <button class="primary-button" type="button">Adicionar</button>
+            </div>
+          </form>
+
+          <div class="category-list" aria-label="Lista de categorias">
+            <div class="category-row">
+              <span class="swatch red" aria-hidden="true"></span>
+              <div>
+                <strong>Alimentacao</strong>
+                <div class="muted">Despesa recorrente</div>
+              </div>
+              <span class="status">Ativa</span>
+            </div>
+            <div class="category-row">
+              <span class="swatch blue" aria-hidden="true"></span>
+              <div>
+                <strong>Moradia</strong>
+                <div class="muted">Despesa fixa</div>
+              </div>
+              <span class="status">Ativa</span>
+            </div>
+            <div class="category-row">
+              <span class="swatch green" aria-hidden="true"></span>
+              <div>
+                <strong>Receita fixa</strong>
+                <div class="muted">Entrada mensal</div>
+              </div>
+              <span class="status">Ativa</span>
+            </div>
+            <div class="category-row">
+              <span class="swatch orange" aria-hidden="true"></span>
+              <div>
+                <strong>Assinaturas</strong>
+                <div class="muted">Sem uso no periodo</div>
+              </div>
+              <span class="status">Inativa</span>
+            </div>
+          </div>
+        </aside>
+
+        <section class="panel" aria-labelledby="sumarios">
+          <h2 id="sumarios">Sumarios financeiros</h2>
+          <div class="summary-filters" aria-label="Filtros de sumario">
+            <select aria-label="Periodo">
+              <option>Maio de 2026</option>
+              <option>Abril de 2026</option>
+            </select>
+            <select aria-label="Categoria">
+              <option>Todas as categorias</option>
+              <option>Alimentacao</option>
+              <option>Moradia</option>
+              <option>Receita fixa</option>
+            </select>
+            <select aria-label="Tipo">
+              <option>Receitas e despesas</option>
+              <option>Apenas receitas</option>
+              <option>Apenas despesas</option>
+            </select>
+            <button type="button">Atualizar</button>
+          </div>
+
+          <div class="summary-grid" aria-label="Totais filtrados">
+            <article class="summary-card">
+              <span class="muted">Saldo do filtro</span>
+              <strong class="info">R$ 2.840,00</strong>
+            </article>
+            <article class="summary-card">
+              <span class="muted">Total de receitas</span>
+              <strong class="income">R$ 5.200,00</strong>
+            </article>
+            <article class="summary-card">
+              <span class="muted">Total de despesas</span>
+              <strong class="expense">R$ 2.360,00</strong>
+            </article>
+          </div>
+
+          <h3>Distribuicao por categoria</h3>
+          <div class="breakdown">
+            <div class="breakdown-row">
+              <strong>Moradia</strong>
+              <div class="track"><div class="fill expense-fill" style="width: 78%"></div></div>
+              <span class="expense">R$ 1.100</span>
+            </div>
+            <div class="breakdown-row">
+              <strong>Alimentacao</strong>
+              <div class="track"><div class="fill expense-fill" style="width: 46%"></div></div>
+              <span class="expense">R$ 650</span>
+            </div>
+            <div class="breakdown-row">
+              <strong>Transporte</strong>
+              <div class="track"><div class="fill expense-fill" style="width: 28%"></div></div>
+              <span class="expense">R$ 310</span>
+            </div>
+            <div class="breakdown-row">
+              <strong>Receita fixa</strong>
+              <div class="track"><div class="fill income-fill" style="width: 92%"></div></div>
+              <span class="income">R$ 4.800</span>
+            </div>
+          </div>
+
+          <div class="message">
+            Sumarios sao calculados a partir das transacoes persistidas e filtrados pelo usuario autenticado.
+          </div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PoupaMais - Login</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f7f9;
+        --panel: #ffffff;
+        --text: #20242a;
+        --muted: #69717d;
+        --line: #d7dce2;
+        --brand: #2f7d59;
+        --brand-dark: #245f45;
+        --warning: #b56b2a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.4;
+        display: grid;
+        grid-template-rows: auto 1fr;
+      }
+
+      header {
+        background: var(--panel);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .topbar,
+      main {
+        width: min(1080px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        min-height: 68px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+      }
+
+      .mark {
+        width: 34px;
+        height: 34px;
+        border: 2px solid var(--brand);
+        color: var(--brand);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+      }
+
+      a {
+        color: var(--brand-dark);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 28px;
+        align-items: center;
+        padding: 40px 0;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        padding: 24px;
+      }
+
+      h1,
+      h2,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        font-size: clamp(1.8rem, 3vw, 2.6rem);
+        margin-bottom: 12px;
+      }
+
+      h2 {
+        font-size: 1.1rem;
+        margin-bottom: 18px;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .wireframe {
+        display: grid;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .wire-row {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 14px;
+      }
+
+      .wire-box {
+        min-height: 56px;
+        border: 1px dashed #aab2bd;
+        background: #fbfcfd;
+      }
+
+      .wire-box.tall {
+        min-height: 150px;
+      }
+
+      label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 7px;
+      }
+
+      input {
+        width: 100%;
+        min-height: 42px;
+        border: 1px solid var(--line);
+        padding: 0 12px;
+        font: inherit;
+        background: #ffffff;
+      }
+
+      .field {
+        margin-bottom: 16px;
+      }
+
+      .form-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      button,
+      .button {
+        min-height: 42px;
+        border: 1px solid var(--brand-dark);
+        padding: 0 16px;
+        background: var(--brand);
+        color: #ffffff;
+        font: inherit;
+        font-weight: 700;
+        cursor: default;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .button.secondary {
+        background: #ffffff;
+        color: var(--brand-dark);
+      }
+
+      .notice {
+        border-left: 4px solid var(--warning);
+        background: #fff7ee;
+        padding: 12px;
+        margin-top: 18px;
+        color: #66401d;
+      }
+
+      @media (max-width: 760px) {
+        .topbar {
+          padding: 16px 0;
+        }
+
+        main {
+          grid-template-columns: 1fr;
+          align-items: start;
+        }
+
+        .wire-row {
+          grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+          align-items: stretch;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <div class="mark">P+</div>
+          <span>PoupaMais</span>
+        </div>
+        <a href="index.html">Voltar aos prototipos</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel" aria-labelledby="titulo-login">
+        <h1 id="titulo-login">Acesse sua area financeira</h1>
+        <p class="muted">
+          A tela representa o bloqueio inicial antes de dashboard, transacoes, categorias e sumarios.
+        </p>
+
+        <div class="wireframe" aria-hidden="true">
+          <div class="wire-row">
+            <div class="wire-box"></div>
+            <div class="wire-box"></div>
+          </div>
+          <div class="wire-box tall"></div>
+        </div>
+      </section>
+
+      <aside class="panel" aria-labelledby="form-login">
+        <h2 id="form-login">Login</h2>
+        <form>
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input id="email" type="email" value="usuario@email.com" />
+          </div>
+          <div class="field">
+            <label for="senha">Senha</label>
+            <input id="senha" type="password" value="12345678" />
+          </div>
+
+          <div class="form-actions">
+            <button type="button">Entrar</button>
+            <a href="login.html">Recuperar senha</a>
+          </div>
+        </form>
+
+        <div class="notice">
+          Sessao expirada ou credenciais invalidas aparecem como erro padronizado nesta area.
+        </div>
+      </aside>
+    </main>
+  </body>
+</html>
