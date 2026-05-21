@@ -38,7 +38,7 @@ export const login = createAsyncThunk<string, LoginRequest, { rejectValue: strin
 
       return response.token
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Falha ao autenticar usuario.'
+      const message = error instanceof Error ? error.message : 'Falha ao autenticar usuário.'
       return rejectWithValue(message)
     }
   },
@@ -70,7 +70,7 @@ const authSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.status = 'failed'
-        state.error = action.payload ?? 'Falha ao autenticar usuario.'
+        state.error = action.payload ?? 'Falha ao autenticar usuário.'
       })
   },
 })

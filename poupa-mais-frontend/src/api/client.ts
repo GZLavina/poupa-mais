@@ -9,7 +9,7 @@ import type {
   UserResponse,
 } from '../types/api'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8081'
 
 class HttpError extends Error {
   constructor(message: string) {
@@ -19,12 +19,12 @@ class HttpError extends Error {
 }
 
 function normalizeMessage(status: number, fallback: string): string {
-  if (status === 401) return 'Sessao expirada ou credenciais invalidas.'
-  if (status === 403) return 'Voce nao tem permissao para esta operacao.'
-  if (status === 404) return 'Recurso nao encontrado.'
+  if (status === 401) return 'Sessão expirada ou credenciais inválidas.'
+  if (status === 403) return 'Você não tem permissão para esta operação.'
+  if (status === 404) return 'Recurso não encontrado.'
   if (status === 409) return 'Conflito de dados. Verifique os campos informados.'
-  if (status === 400) return fallback || 'Dados invalidos. Revise os campos.'
-  return fallback || 'Nao foi possivel concluir a operacao agora.'
+  if (status === 400) return fallback || 'Dados inválidos. Revise os campos.'
+  return fallback || 'Não foi possível concluir a operação agora.'
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {

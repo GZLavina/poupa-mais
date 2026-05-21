@@ -20,7 +20,7 @@ export const registerUser = createAsyncThunk<UserResponse, CreateUserRequest, { 
     try {
       return await createUser(payload)
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Falha ao cadastrar usuario.'
+      const message = error instanceof Error ? error.message : 'Falha ao cadastrar usuário.'
       return rejectWithValue(message)
     }
   },
@@ -43,7 +43,7 @@ const userSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = 'failed'
-        state.error = action.payload ?? 'Falha ao cadastrar usuario.'
+        state.error = action.payload ?? 'Falha ao cadastrar usuário.'
       })
   },
 })
