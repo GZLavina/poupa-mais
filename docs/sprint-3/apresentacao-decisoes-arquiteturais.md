@@ -310,6 +310,23 @@ Exemplos:
 
 ---
 
+## DAS x Implementação Atual: O que Mudou
+
+| Tema | Desenho no DAS | Implementação iniciada |
+| --- | --- | --- |
+| Escopo | Autenticação, transações, categorias, dashboard, metas e relatórios. | Fatia vertical inicial: cadastro/login e categorias; dashboard e transações ainda são placeholders. |
+| API | Exemplos com `/api/auth`, `/api/categorias`, `/api/transacoes`, `/api/metas` e `/api/relatorios`. | Rotas reais sem prefixo `/api` e em inglês: `/users`, `/auth/login`, `/categories`. |
+| Categorias | CRUD completo, incluindo listagem. | Backend tem `POST`, `PUT` e `DELETE`; o frontend já chama `GET /categories`, mas o controller ainda não expõe listagem. |
+| Dados | `usuarios`, `categorias`, `transacoes`, `metas_financeiras` e relatórios opcionais; PostgreSQL como referência. | Flyway cria apenas `users` e `categories` em H2; categoria usa `description`, não `icone`, `cor` e `ativa`. |
+| Organização | Pacotes planejados em PT-BR: `usuarios`, `categorias`, `shared`, `config`, `infra`, `routes`. | Código atual usa `user`, `category`, `common`, `security`; frontend ainda concentra navegação em `App.tsx`. |
+| Configuração | Banco, CORS e segredos externos por ambiente. | `application.properties` fixa H2, CORS local e segredo JWT para desenvolvimento. |
+
+Leitura: não houve ruptura arquitetural; houve recorte de MVP e ajustes de nomenclatura enquanto a primeira fatia foi implementada.
+
+Evidências: [`Documento de Arquitetura do Sistema.md`](Documento%20de%20Arquitetura%20do%20Sistema.md#L160-L325), [`CategoryController.java`](../../poupa-mais-backend/src/main/java/com/poupa_mais_backend/category/CategoryController.java#L10-L50), [`V1__create_users_and_categories.sql`](../../poupa-mais-backend/src/main/resources/db/migration/V1__create_users_and_categories.sql#L1-L20), [`poupaMaisApi.ts`](../../poupa-mais-frontend/src/api/poupaMaisApi.ts#L66-L107), [`application.properties`](../../poupa-mais-backend/src/main/resources/application.properties#L3-L18).
+
+---
+
 ## Decisão: Testes Focados nas Fronteiras de Risco
 
 - Services são testados para regras de negócio e conflitos.

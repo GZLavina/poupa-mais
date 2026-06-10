@@ -1,19 +1,28 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import './App.css'
 import {
   getApiErrorMessage,
   useCreateCategoryMutation,
+  useCreateTransactionMutation,
   useDeleteCategoryMutation,
+  useGetBalanceQuery,
   useGetCategoriesQuery,
+  useGetTransactionsQuery,
   useUpdateCategoryMutation,
 } from './api/poupaMaisApi'
 import { useAppDispatch, useAppSelector } from './app/hooks'
 import { login, logout } from './features/auth/authSlice'
 import { CategoryForm } from './features/categories/CategoryForm'
 import { CategoryList } from './features/categories/CategoryList'
+import { CategoryDistribution } from './features/summary/CategoryDistribution'
+import { TransactionForm } from './features/transactions/TransactionForm'
+import { TransactionList } from './features/transactions/TransactionList'
 import { registerUser } from './features/user/userSlice'
-import type { CategoryResponse, CreateCategoryRequest } from './types/api'
+import type { CategoryResponse, CreateCategoryRequest, CreateTransactionRequest } from './types/api'
+import { formatCurrency, formatDate } from './utils/format'
+import { periodOptions, periodRange } from './utils/period'
+import type { PeriodKey } from './utils/period'
 
 type AppView = 'dashboard' | 'transactions' | 'categories'
 
@@ -321,6 +330,27 @@ function AuthenticatedShell({ currentView, onChangeView, onLogout }: Authenticat
 }
 
 function DashboardView() {
+  const hasToken = useAppSelector((state) => Boolean(state.auth.token))
+  const [period, setPeriod] = useState<PeriodKey>('month')
+  const range = useMemo(() => periodRange(period), [period])
+
+  const balanceQuery = useGetBalanceQuery(range, { skip: !hasToken })
+  const transactionsQuery = useGetTransactionsQuery(undefined, { skip: !hasToken })
+
+  const balance = balanceQuery.data
+  const recentTransactions = (transactionsQuery.data ?? []).slice(0, 5)
+  const dashboardError = getApiErrorMessage(
+    balanceQuery.error ?? transactionsQuery.error,
+    'Falha ao carregar o dashboard.',
+  )
+
+  function metricValue(value: number | undefined): string {
+    if (balanceQuery.isLoading || value === undefined) {
+      return '—'
+    }
+    return formatCurrency(value)
+  }
+
   return (
     <section className="view-stack" aria-labelledby="dashboard-title">
       <div className="view-heading">
@@ -328,53 +358,137 @@ function DashboardView() {
           <p className="eyebrow">Visão geral</p>
           <h1 id="dashboard-title">Dashboard</h1>
         </div>
-        <select aria-label="Período do dashboard" defaultValue="month">
-          <option value="month">Este mês</option>
-          <option value="quarter">Trimestre</option>
-          <option value="year">Ano</option>
+        <select
+          aria-label="Período do dashboard"
+          value={period}
+          onChange={(event) => setPeriod(event.target.value as PeriodKey)}
+        >
+          {periodOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
         </select>
       </div>
 
       <div className="metric-grid">
         <article className="metric-card">
           <span>Saldo</span>
-          <strong>R$ 0,00</strong>
+          <strong>{metricValue(balance?.balance)}</strong>
         </article>
         <article className="metric-card income">
           <span>Receitas</span>
-          <strong>R$ 0,00</strong>
+          <strong>{metricValue(balance?.totalIncome)}</strong>
         </article>
         <article className="metric-card expense">
           <span>Despesas</span>
-          <strong>R$ 0,00</strong>
+          <strong>{metricValue(balance?.totalExpense)}</strong>
         </article>
       </div>
 
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Evolução financeira</h2>
-          <span className="status-pill">Aguardando transações</span>
+      {dashboardError && (
+        <div className="feedback-row">
+          <p className="error">{dashboardError}</p>
+          <button
+            type="button"
+            className="ghost-action"
+            onClick={() => {
+              void balanceQuery.refetch()
+              void transactionsQuery.refetch()
+            }}
+          >
+            Tentar novamente
+          </button>
         </div>
-        <div className="chart-placeholder" aria-label="Gráfico de evolução vazio">
-          <span />
-          <span />
-          <span />
-          <span />
-          <span />
-        </div>
-      </section>
+      )}
+
+      <CategoryDistribution range={range} isDisabled={!hasToken} />
 
       <section className="panel">
         <div className="panel-header">
           <h2>Últimas transações</h2>
+          <span className="status-pill">Mais recentes</span>
         </div>
-        <p className="empty-state">Nenhuma transação disponível nesta fase.</p>
+
+        {transactionsQuery.isLoading && <p className="loading-state">Carregando transações...</p>}
+
+        {!transactionsQuery.isLoading && recentTransactions.length === 0 && (
+          <p className="empty-state">
+            Nenhuma transação registrada ainda. Adicione lançamentos na aba Transações.
+          </p>
+        )}
+
+        {recentTransactions.length > 0 && (
+          <div className="category-table-wrap">
+            <table className="category-table">
+              <thead>
+                <tr>
+                  <th scope="col">Data</th>
+                  <th scope="col">Categoria</th>
+                  <th scope="col">Descrição</th>
+                  <th scope="col">Valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentTransactions.map((transaction) => (
+                  <tr key={transaction.id}>
+                    <td data-label="Data">{formatDate(transaction.date)}</td>
+                    <td data-label="Categoria">{transaction.categoryName}</td>
+                    <td data-label="Descrição">{transaction.description || 'Sem descrição'}</td>
+                    <td data-label="Valor">
+                      <span
+                        className={transaction.type === 'INCOME' ? 'amount-income' : 'amount-expense'}
+                      >
+                        {transaction.type === 'INCOME' ? '+ ' : '- '}
+                        {formatCurrency(transaction.amount)}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
     </section>
   )
 }
 
 function TransactionsView() {
+  const hasToken = useAppSelector((state) => Boolean(state.auth.token))
+  const categoriesQuery = useGetCategoriesQuery(undefined, { skip: !hasToken })
+  const transactionsQuery = useGetTransactionsQuery(undefined, { skip: !hasToken })
+  const [createTransaction, createTransactionStatus] = useCreateTransactionMutation()
+
+  const [successMessage, setSuccessMessage] = useState('')
+
+  const categories = categoriesQuery.data ?? []
+  const transactions = transactionsQuery.data ?? []
+
+  const transactionError = getApiErrorMessage(
+    transactionsQuery.error ?? createTransactionStatus.error,
+    'Falha ao processar transação.',
+  )
+
+  function resetFeedback() {
+    setSuccessMessage('')
+    createTransactionStatus.reset()
+  }
+
+  async function handleCreateTransaction(payload: CreateTransactionRequest) {
+    resetFeedback()
+
+    try {
+      const created = await createTransaction(payload).unwrap()
+      const label = created.type === 'INCOME' ? 'Receita' : 'Despesa'
+      setSuccessMessage(`${label} de ${created.categoryName} registrada.`)
+      return true
+    } catch {
+      // RTK Query stores the normalized error in createTransactionStatus.error.
+      return false
+    }
+  }
+
   return (
     <section className="view-stack" aria-labelledby="transactions-title">
       <div className="view-heading">
@@ -384,29 +498,35 @@ function TransactionsView() {
         </div>
       </div>
 
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Nova transação</h2>
-          <span className="status-pill muted">Endpoint pendente</span>
-        </div>
-        <div className="placeholder-form" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-          <span />
-        </div>
-        <p className="empty-state">
-          A estrutura da tela está pronta para receber o fluxo real quando os endpoints de
-          transações estiverem disponíveis.
-        </p>
-      </section>
+      <div className="transaction-workflow">
+        <TransactionForm
+          categories={categories}
+          isSubmitting={createTransactionStatus.isLoading}
+          isDisabled={!hasToken}
+          onCreate={handleCreateTransaction}
+        />
 
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Lista de transações</h2>
+        <TransactionList
+          transactions={transactions}
+          categories={categories}
+          isLoading={transactionsQuery.isLoading}
+          isFetching={transactionsQuery.isFetching}
+          onRetry={() => {
+            resetFeedback()
+            void transactionsQuery.refetch()
+          }}
+        />
+      </div>
+
+      {(successMessage || transactionError) && (
+        <div className="feedback-row">
+          {successMessage && <p className="success">{successMessage}</p>}
+          {transactionError && <p className="error">{transactionError}</p>}
+          <button type="button" className="ghost-action" onClick={resetFeedback}>
+            Dispensar
+          </button>
         </div>
-        <p className="empty-state">Nenhuma transação carregada.</p>
-      </section>
+      )}
     </section>
   )
 }

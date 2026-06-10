@@ -327,7 +327,8 @@ p {
   gap: 7px;
 }
 
-.field-group label {
+.field-group label,
+.field-label {
   color: #303b4c;
   font-size: 0.86rem;
   font-weight: 700;
@@ -638,6 +639,78 @@ select {
   height: 52%;
 }
 
+.segment-control.compact {
+  display: inline-grid;
+  grid-auto-flow: column;
+  margin-bottom: 0;
+  padding: 3px;
+}
+
+.segment-control.compact button {
+  min-height: 32px;
+  padding: 0 14px;
+  font-size: 0.82rem;
+}
+
+.distribution-list {
+  list-style: none;
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+.distribution-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.distribution-name {
+  font-weight: 700;
+  color: #18212f;
+}
+
+.distribution-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  color: #18212f;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.distribution-share {
+  color: #697586;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+.distribution-track {
+  height: 10px;
+  border-radius: 999px;
+  background: #eef2f7;
+  overflow: hidden;
+}
+
+.distribution-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  min-width: 2px;
+  transition: width 0.25s ease;
+}
+
+.distribution-fill.expense {
+  background: #b42318;
+}
+
+.distribution-fill.income {
+  background: #047857;
+}
+
 .placeholder-form {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -667,6 +740,52 @@ select {
 .category-form-panel {
   position: sticky;
   top: 94px;
+}
+
+.transaction-workflow {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.filters-row .field-group {
+  flex: 1 1 150px;
+  min-width: 130px;
+}
+
+.filters-row .compact-action {
+  flex: 0 0 auto;
+}
+
+.amount-income {
+  color: #047857;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.amount-expense {
+  color: #b42318;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.status-pill.pill-income {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.status-pill.pill-expense {
+  color: #b42318;
+  background: #fee2e2;
 }
 
 .category-table-wrap {
@@ -821,6 +940,7 @@ select {
   .metric-grid,
   .two-column,
   .category-workflow,
+  .transaction-workflow,
   .placeholder-form {
     grid-template-columns: 1fr;
   }

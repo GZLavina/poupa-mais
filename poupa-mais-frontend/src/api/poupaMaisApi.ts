@@ -3,8 +3,14 @@ import type { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import type { RootState } from '../app/store'
 import type {
   ApiError,
+  BalanceQuery,
+  BalanceResponse,
   CategoryResponse,
+  CategorySummaryQuery,
+  CategorySummaryResponse,
   CreateCategoryRequest,
+  CreateTransactionRequest,
+  TransactionResponse,
   UpdateCategoryRequest,
 } from '../types/api'
 
@@ -61,7 +67,7 @@ export const poupaMaisApi = createApi({
       return headers
     },
   }),
-  tagTypes: ['Category'],
+  tagTypes: ['Category', 'Transaction', 'Summary'],
   endpoints: (builder) => ({
     getCategories: builder.query<CategoryResponse[], void>({
       query: () => '/categories',
@@ -105,6 +111,49 @@ export const poupaMaisApi = createApi({
         { type: 'Category', id: 'LIST' },
       ],
     }),
+    getTransactions: builder.query<TransactionResponse[], void>({
+      query: () => '/transactions',
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map((transaction) => ({ type: 'Transaction' as const, id: transaction.id })),
+              { type: 'Transaction', id: 'LIST' },
+            ]
+          : [{ type: 'Transaction', id: 'LIST' }],
+    }),
+    createTransaction: builder.mutation<TransactionResponse, CreateTransactionRequest>({
+      query: (body) => ({
+        url: '/transactions',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [
+        { type: 'Transaction', id: 'LIST' },
+        { type: 'Summary', id: 'BALANCE' },
+        { type: 'Summary', id: 'BY_CATEGORY' },
+      ],
+    }),
+    getBalance: builder.query<BalanceResponse, BalanceQuery | void>({
+      query: (params) => {
+        const search = new URLSearchParams()
+        if (params?.startDate) search.set('startDate', params.startDate)
+        if (params?.endDate) search.set('endDate', params.endDate)
+        const queryString = search.toString()
+        return queryString ? `/summary/balance?${queryString}` : '/summary/balance'
+      },
+      providesTags: [{ type: 'Summary', id: 'BALANCE' }],
+    }),
+    getCategorySummary: builder.query<CategorySummaryResponse, CategorySummaryQuery | void>({
+      query: (params) => {
+        const search = new URLSearchParams()
+        if (params?.startDate) search.set('startDate', params.startDate)
+        if (params?.endDate) search.set('endDate', params.endDate)
+        if (params?.type) search.set('type', params.type)
+        const queryString = search.toString()
+        return queryString ? `/summary/by-category?${queryString}` : '/summary/by-category'
+      },
+      providesTags: [{ type: 'Summary', id: 'BY_CATEGORY' }],
+    }),
   }),
 })
 
@@ -113,4 +162,8 @@ export const {
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  useGetTransactionsQuery,
+  useCreateTransactionMutation,
+  useGetBalanceQuery,
+  useGetCategorySummaryQuery,
 } = poupaMaisApi
