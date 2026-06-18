@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { createUser } from '../../api/client'
-import type { CreateUserRequest, UserResponse } from '../../types/api'
+import type { CreateUserRequest, RegistrationResponse } from '../../types/api'
 
 interface UserState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
-  lastCreatedUser: UserResponse | null
+  lastCreatedUser: RegistrationResponse | null
   error: string | null
 }
 
@@ -14,7 +14,7 @@ const initialState: UserState = {
   error: null,
 }
 
-export const registerUser = createAsyncThunk<UserResponse, CreateUserRequest, { rejectValue: string }>(
+export const registerUser = createAsyncThunk<RegistrationResponse, CreateUserRequest, { rejectValue: string }>(
   'user/registerUser',
   async (payload, { rejectWithValue }) => {
     try {

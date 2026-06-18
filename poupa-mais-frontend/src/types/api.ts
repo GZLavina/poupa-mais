@@ -22,6 +22,11 @@ export interface LoginRequest {
   password: string
 }
 
+export interface RegistrationResponse extends UserResponse {
+  token: string
+  tokenType: string
+}
+
 export interface LoginResponse {
   token: string
   tokenType: string

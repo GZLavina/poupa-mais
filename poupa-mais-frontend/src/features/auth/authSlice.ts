@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { loginUser } from '../../api/client'
 import type { LoginRequest } from '../../types/api'
 
@@ -48,6 +49,14 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    setAuthenticated: (state, action: PayloadAction<{ token: string }>) => {
+      state.token = action.payload.token
+      state.status = 'authenticated'
+      state.error = null
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(TOKEN_STORAGE_KEY, action.payload.token)
+      }
+    },
     logout: (state) => {
       state.token = null
       state.status = 'idle'
@@ -75,6 +84,6 @@ const authSlice = createSlice({
   },
 })
 
-export const { logout } = authSlice.actions
+export const { logout, setAuthenticated } = authSlice.actions
 
 export default authSlice.reducer
