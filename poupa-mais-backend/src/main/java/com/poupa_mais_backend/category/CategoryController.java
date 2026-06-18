@@ -7,6 +7,8 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
@@ -15,6 +17,11 @@ public class CategoryController {
 
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
+    }
+
+    @GetMapping
+    public List<CategoryResponse> list(@AuthenticationPrincipal AuthenticatedUser user) {
+        return categoryService.list(requireUserId(user));
     }
 
     @PostMapping
