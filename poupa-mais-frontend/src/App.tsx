@@ -12,7 +12,7 @@ import {
   useUpdateCategoryMutation,
 } from './api/poupaMaisApi'
 import { useAppDispatch, useAppSelector } from './app/hooks'
-import { login, logout } from './features/auth/authSlice'
+import { login, logout, setAuthenticated } from './features/auth/authSlice'
 import { CategoryForm } from './features/categories/CategoryForm'
 import { CategoryList } from './features/categories/CategoryList'
 import { CategoryDistribution } from './features/summary/CategoryDistribution'
@@ -21,7 +21,7 @@ import { TransactionList } from './features/transactions/TransactionList'
 import { registerUser } from './features/user/userSlice'
 import type { CategoryResponse, CreateCategoryRequest, CreateTransactionRequest } from './types/api'
 import { formatCurrency, formatDate } from './utils/format'
-import { periodOptions, periodRange } from './utils/period'
+import { periodLabel, periodOptions, periodRange } from './utils/period'
 import type { PeriodKey } from './utils/period'
 
 type AppView = 'dashboard' | 'transactions' | 'categories'
@@ -72,17 +72,17 @@ function PublicSession() {
   async function handleRegister(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    const email = normalize(registerForm.email)
-    await dispatch(
+    const result = await dispatch(
       registerUser({
         name: normalize(registerForm.name),
-        email,
+        email: normalize(registerForm.email),
         password: registerForm.password,
       }),
     )
 
-    setLoginForm((prev) => ({ ...prev, email }))
-    setRegisterForm({ name: '', email: '', password: '' })
+    if (registerUser.fulfilled.match(result)) {
+      dispatch(setAuthenticated({ token: result.payload.token }))
+    }
   }
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
@@ -331,7 +331,7 @@ function AuthenticatedShell({ currentView, onChangeView, onLogout }: Authenticat
 
 function DashboardView() {
   const hasToken = useAppSelector((state) => Boolean(state.auth.token))
-  const [period, setPeriod] = useState<PeriodKey>('month')
+  const [period, setPeriod] = useState<PeriodKey>('all')
   const range = useMemo(() => periodRange(period), [period])
 
   const balanceQuery = useGetBalanceQuery(range, { skip: !hasToken })
@@ -365,7 +365,7 @@ function DashboardView() {
         >
           {periodOptions.map((option) => (
             <option key={option.value} value={option.value}>
-              {option.label}
+              {periodLabel(option.value)}
             </option>
           ))}
         </select>

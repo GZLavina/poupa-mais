@@ -5,8 +5,8 @@ import type {
   CreateUserRequest,
   LoginRequest,
   LoginResponse,
+  RegistrationResponse,
   UpdateCategoryRequest,
-  UserResponse,
 } from '../types/api'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8081'
@@ -64,8 +64,8 @@ function authHeaders(token: string): HeadersInit {
   }
 }
 
-export async function createUser(payload: CreateUserRequest): Promise<UserResponse> {
-  return request<UserResponse>('/users', {
+export async function createUser(payload: CreateUserRequest): Promise<RegistrationResponse> {
+  return request<RegistrationResponse>('/users', {
     method: 'POST',
     body: JSON.stringify(payload),
   })
