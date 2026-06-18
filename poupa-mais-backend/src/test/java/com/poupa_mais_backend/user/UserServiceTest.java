@@ -1,6 +1,8 @@
 package com.poupa_mais_backend.user;
 
 import com.poupa_mais_backend.common.ConflictException;
+import com.poupa_mais_backend.security.AuthenticatedUser;
+import com.poupa_mais_backend.security.JwtService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +23,9 @@ class UserServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private JwtService jwtService;
+
     @InjectMocks
     private UserService userService;
 
@@ -36,12 +41,15 @@ class UserServiceTest {
             idField.set(user, 1L);
             return user;
         });
+        when(jwtService.generateToken(any(AuthenticatedUser.class))).thenReturn("test-jwt-token");
 
-        UserResponse response = userService.createUser(request);
+        RegistrationResponse response = userService.createUser(request);
 
         assertEquals(1L, response.id());
         assertEquals("Maria", response.name());
         assertEquals("maria@mail.com", response.email());
+        assertEquals("test-jwt-token", response.token());
+        assertEquals("Bearer", response.tokenType());
     }
 
     @Test
